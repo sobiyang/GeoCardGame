@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geometic Card Game</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='http://fonts.googleapis.com/css?family=Droid+Sans:700' rel='stylesheet' type='text/css'>
+        <link href="css/jquery.mobile-1.4.0.min.css" rel="stylesheet">
+        <link href="css/game.css" rel="stylesheet">
+    </head>
+    <body>
+        <div data-role="header" class="ui-header-fixed">
+            <h1>Geometric Card Game</h1>
+            <a href="index.html" data-icon="gear" class="ui-btn-right" data-mini="true">Options</a>
+        </div>
+        <div id="opStats"></div>
+        <canvas id="gameContainer"></canvas>
+        <div id="myStats"></div>
+        <div data-role="footer" class="ui-footer-fixed">
+            <div data-role="controlgroup" data-type="horizontal">
+                <button  onclick="player1.drawCard();" class="ui-btn ui-corner-all">Draw</button>
+                <button  onclick="player1.mergeCards();" class="ui-btn ui-corner-all">Merge</button>
+                <button  onclick="player1.playCard(player2);" class="ui-btn ui-corner-all">Play</button>
+                <button  onclick="player1.discardCard();" class="ui-btn ui-corner-all">Discard</button>
+            </div>
+        </div><!-- /footer -->
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.4.0.min.js"></script>
+        <script src="js/easeljs-0.7.0.min.js"></script>
+        <script src="js/TweenMax.min.js"></script>
+        <script src="js/GCCard.js"></script>
+        <script src="js/GCPlayer.js"></script>
+        <script src="js/GCGame.js"></script>
+        <script>
+                    $(document).ready(initGame);
+        </script>
+    </body>
+</html>
