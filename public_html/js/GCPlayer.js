@@ -1,3 +1,4 @@
+// Define the Player class
 function Player(seat, max_card_count, health) {
     if (seat === null) {
         console.log("Please provide a seat.");
@@ -16,6 +17,7 @@ function Player(seat, max_card_count, health) {
     this.max_card_count = max_card_count;
     this.deck = [];
     this.tappedCards = [];
+    this.selectableCards = [];
 
     switch (seat) {
         case 0:
@@ -44,7 +46,6 @@ function Player(seat, max_card_count, health) {
     stage.update();
 
     this.initCards();
-
 }
 
 Player.prototype.initCards = function() {
@@ -60,27 +61,60 @@ Player.prototype.initCards = function() {
     }
 };
 
-// Remove all event listeners
-Player.prototype.removeCardMouseHandler = function(card) {
-    card.bg.off('click');
-    card.bg.off('mouseover');
-    card.bg.off('mouseout');
-    card.pattern.off('click');
-    card.pattern.off('mouseover');
-    card.pattern.off('mouseout');
+
+Player.prototype.chooseCard = function(card) {
+    var targetX = this.baseX + this.deck.length * (cardWidth + 20);
+    var targetY = this.baseY;
+    this.deck.push(card);
+    card.setPosition(targetX, targetY);
+    this.initMouseInOutHandler(card);
+
+    for (var i = 0; i < 4; i++) {
+        var tmpCard = this.selectableCards[i];
+        if (card !== tmpCard) {
+            stage.removeChild(tmpCard.shape);
+        }
+    }
+    stage.update();
+    this.selectableCards.length = 0;
+    moveAI();
 };
 
-Player.prototype.clickHander = function(evt) {
-    for (var i = 0; i < this.deck.length; i++) {
-        if (this.deck[i].pattern === evt.targetNode ||
-                this.deck[i].pattern === evt.targetNode.parent ||
-                this.deck[i].bg === evt.targetNode)
-            break;
+Player.prototype.initCardSelectionHandler = function(card) {
+    card.shape.removeAllEventListeners('mouseover');
+    card.shape.removeAllEventListeners('mouseout');
+    card.shape.removeAllEventListeners('click');
+
+    card.shape.addEventListener('mouseover', function(evt) {
+        evt.target.shadow = new createjs.Shadow("gold", 0, 0, 20);
+        stage.update();
+    });
+    card.shape.addEventListener('mouseout', function(evt) {
+        evt.target.shadow = null;
+        stage.update();
+    });
+    card.shape.addEventListener('click', function(evt) {
+        player1.chooseCard(card);
+    });
+};
+
+Player.prototype.showCardSelection = function() {
+    this.selectableCards.length = 0;
+    for (var i = 0; i < 4; i++) {
+        var targetX = this.baseX + i * (cardWidth + 20);
+        var targetY = (stage.canvas.height - cardHeight) / 2;
+        var card = new Card(stage, targetX, targetY, i, this.isCardFold);
+        this.selectableCards.push(card);
+        this.initCardSelectionHandler(card);
     }
-    this.toggleTapped(i);
+    stage.update();
 };
 
 Player.prototype.initMouseInOutHandler = function(card) {
+    card.shape.removeAllEventListeners('mouseover');
+    card.shape.removeAllEventListeners('mouseout');
+    card.shape.removeAllEventListeners('click');
+
     card.shape.addEventListener('mouseover', function(evt) {
         evt.target.shadow = new createjs.Shadow("#333333", 2, 2, 5);
         stage.update();
@@ -89,7 +123,7 @@ Player.prototype.initMouseInOutHandler = function(card) {
         evt.target.shadow = null;
         stage.update();
     });
-    card.shape.addEventListener('click', function(evt) {
+    card.shape.addEventListener('click', function() {
         player1.toggleSelected(card);
     });
 };
@@ -204,6 +238,11 @@ Player.prototype.mergeCards = function() {
     }
 };
 
+Player.prototype.turnOpCards = function(target_player) {
+    for(var i = 0; i < target_player.deck.length; i++){
+        target_player.deck[i].turn();
+    }
+};
 Player.prototype.playCard = function(target_player) {
     if (this.tappedCards.length === 1) {
         var obj = {
@@ -278,10 +317,10 @@ Player.prototype.playCard = function(target_player) {
                                     moveAI();
                                 break;
                             case 7:
-                                turnOpCards();
+                                this.target.player.turnOpCards(this.target.target_player);
                                 break;
                             case 8:
-                                showCardSelection();
+                                this.target.player.showCardSelection();
                             default:
                                 break;
                         }

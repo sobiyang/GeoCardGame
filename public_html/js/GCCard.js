@@ -1,4 +1,4 @@
-// Define the card class
+// Define the Card class
 function Card(stageIn, cardX, cardY, typeIn, flippedIn) {
     if (stageIn === null) {
         console.log("The render stage is not ready.");
@@ -118,7 +118,7 @@ function Card(stageIn, cardX, cardY, typeIn, flippedIn) {
 }
 
 
-Card.prototype.turn = function(isTemp) {
+Card.prototype.turn = function() {
     var obj = {shape: this.shape, factor: 1};
     var timeline = new TimelineLite();
     var t1 = new TweenLite(obj, 0.5, {factor: 0, onUpdate: function() {
@@ -126,7 +126,7 @@ Card.prototype.turn = function(isTemp) {
             stage.update();
         }, onComplete: function() {
             this.target.shape.filters = [];
-            this.shape.cache(0, 0, cardWidth, cardHeight);
+            this.target.shape.cache(0, 0, cardWidth, cardHeight);
             stage.update();
         }});
     var t2 = new TweenLite(obj, 0.5, {factor: 1, onUpdate: function() {
@@ -135,28 +135,6 @@ Card.prototype.turn = function(isTemp) {
         }});
     timeline.add(t1);
     timeline.add(t2);
-    if (isTemp) {
-        var t3 = new TweenLite(obj, 0.5, {factor: 0, onUpdate: function() {
-                this.target.bg.setScaleX(this.target.factor);
-                cardLayer.draw();
-            }, onStart: function() {
-                this.target.pattern.setVisible(false);
-                cardLayer.draw();
-            }, delay: 1});
-
-        var t4 = new TweenLite(obj, 0.5, {factor: 1, onUpdate: function() {
-                this.target.bg.setScaleX(this.target.factor);
-                cardLayer.draw();
-            }, onStart: function() {
-                this.target.bg.setFill('grey');
-                this.target.bg.setShadowColor('grey');
-                cardLayer.draw();
-            }, onComplete: function() {
-                toggleControls();
-            }});
-        timeline.add(t3);
-        timeline.add(t4);
-    }
 };
 
 
@@ -276,32 +254,6 @@ Card.prototype.setY = function(newY) {
 
 
 Card.prototype.setPosition = function(newX, newY) {
-    this.bg.setPosition(newX, newY);
-    switch (this.type) {
-        case 0:
-            this.pattern.setPosition(newX + cardWidth / 2, newY + cardHeight / 2);
-            break;
-        case 1:
-            vertices = [newX + (cardWidth - triangleLength) / 2, newY + cardHeight / 2 + triangleLength / 6 * Math.sqrt(3),
-                newX + (cardWidth + triangleLength) / 2, newY + cardHeight / 2 + triangleLength / 6 * Math.sqrt(3),
-                newX + cardWidth / 2, newY + cardHeight / 2 - triangleLength / 3 * Math.sqrt(3)];
-            this.pattern.setAttr("points", vertices);
-            console.log(this);
-            console.log(this.pattern.getPosition());
-            this.pattern.setPosition(0, 0);
-            console.log(this.pattern.getPosition());
-            break;
-        case 2:
-            this.pattern.setPosition(newX + (cardWidth - squareLength) / 2,
-                    newY + (cardHeight - squareLength) / 2);
-            break;
-        case 3:
-            this.pattern.setPosition(newX + (cardWidth - rectangleWidth) / 2,
-                    newY + (cardHeight - rectangleHeight) / 2);
-            break;
-        default:
-            console.log("Invalid card type.");
-            return;
-    }
-    this.layer.draw();
+    this.shape.setTransform(newX, newY);
+    this.stage.update();
 };
