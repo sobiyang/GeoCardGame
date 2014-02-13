@@ -18,21 +18,9 @@ function Player(seat, max_card_count, health) {
     this.deck = [];
     this.tappedCards = [];
     this.selectableCards = [];
+    
+    this.initPlace();
 
-    switch (seat) {
-        case 0:
-            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
-            this.baseY = stageHeight - cardHeight - 20;
-            this.isCardFold = false;
-            break;
-        case 1:
-            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
-            this.baseY = 10;
-            this.isCardFold = true;
-            break;
-        default:
-            break;
-    }
     var shield = new createjs.Graphics();
     shield.setStrokeStyle(1, 'square');
     shield.beginStroke(createjs.Graphics.getRGB(198, 147, 10));
@@ -46,6 +34,23 @@ function Player(seat, max_card_count, health) {
     stage.update();
 
     this.initCards();
+}
+
+Player.prototype.initPlace = function() {    
+    switch (this.seat) {
+        case 0:
+            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
+            this.baseY = stageHeight - cardHeight - 20;
+            this.isCardFold = false;
+            break;
+        case 1:
+            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
+            this.baseY = 10;
+            this.isCardFold = true;
+            break;
+        default:
+            break;
+    }
 }
 
 Player.prototype.initCards = function() {
@@ -150,7 +155,6 @@ Player.prototype.toggleSelected = function(card) {
         card.selected = true;
         this.tappedCards.push(card);
     }
-    console.log(this.tappedCards);
 };
 
 Player.prototype.drawCard = function() {
@@ -165,31 +169,22 @@ Player.prototype.drawCard = function() {
             this.initMouseInOutHandler(card);
         initStats();
         toggleControls();
-        if (this.seat === 0)
-            moveAI();
     }
 };
 
 Player.prototype.discardCard = function() {
+    var my_player = this;
     if (this.tappedCards.length === 1) {
-        var obj = {player: this, card: this.tappedCards[0], deck: this.deck, factor: 1};
-        TweenLite.to(obj, 0.5, {factor: 0, onUpdate: function() {
-                this.target.card.shape.x -= 20;
-                this.target.card.shape.alpha = this.target.factor;
+        TweenLite.to(this.tappedCards[0].shape, 0.5, {x: -20, onUpdate: function() {
                 stage.update();
             }, onComplete: function() {
-                stage.removeChild(this.target.card);
-                initStats();
-
-                for (var i = 0; i < this.target.deck.length; i++) {
-                    if (this.target.card === this.target.deck[i]) {
-                        this.target.player.removeCard(i);
+                for (var i = 0; i < my_player.deck.length; i++) {
+                    if (this.target === my_player.deck[i].shape) {
+                        my_player.removeCard(i);
                     }
                 }
+                stage.removeChild(this.target);
                 toggleControls();
-                if (this.seat === 0)
-                    moveAI();
-
             }
         });
     }
@@ -227,10 +222,7 @@ Player.prototype.mergeCards = function() {
             }
 
             this.deck.push(card);
-            initStats();
             toggleControls();
-            if (this.seat === 0)
-                moveAI();
         }
     }
     else {
@@ -239,92 +231,72 @@ Player.prototype.mergeCards = function() {
 };
 
 Player.prototype.turnOpCards = function(target_player) {
-    for(var i = 0; i < target_player.deck.length; i++){
+    for (var i = 0; i < target_player.deck.length; i++) {
         target_player.deck[i].turn();
     }
 };
+
 Player.prototype.playCard = function(target_player) {
-    if (this.tappedCards.length === 1) {
-        var obj = {
-            player: this,
-            target_player: target_player,
-            card: this.tappedCards[0],
-            factor: 1
-        };
+    var my_player = this;
+    var target_y = (stageHeight - cardHeight) / 2;
+    if (this.tappedCards.length === 1) {        
         if (this.seat !== 0) {
             this.tappedCards[0].shape.filters = [];
             this.tappedCards[0].shape.cache(0, 0, cardWidth, cardHeight);
         }
-        TweenLite.to(obj, 1, {factor: 0, onUpdate: function() {
-                if (this.target.player.seat === 0) {
-                    this.target.card.shape.regY -= -10;
-                    this.target.card.shape.alpha = this.target.factor;
-                    stage.update();
-                }
-                else {
-                    this.target.card.shape.regY += -10;
-                }
+        
+        TweenLite.to(this.tappedCards[0].shape, 1, {
+            y: target_y,
+            ease: Elastic.easeOut,
+            onUpdate: function() {
                 stage.update();
             }, onComplete: function() {
-                stage.removeChild(this.target.card.shape);
-
-                for (var i = 0; i < this.target.player.deck.length; i++) {
-                    if (this.target.card === this.target.player.deck[i]) {
-                        switch (this.target.player.deck[i].type) {
+                for (var i = 0; i < my_player.deck.length; i++) {
+                    if (this.target === my_player.deck[i].shape) {                        
+                        stage.removeChild(this.target);
+                        switch (my_player.deck[i].type) {
                             case 0:
-                                this.target.player.health += 1;
-                                if (this.target.player.seat === 0)
-                                    moveAI();
+                                my_player.health += 1;
                                 break;
                             case 1:
-                                if (this.target.target_player.shield.isVisible()) {
-                                    this.target.target_player.shieldDown();
+                                if (target_player.shield.isVisible()) {
+                                    target_player.shieldDown();
                                 }
                                 else {
-                                    this.target.target_player.health -= 1;
+                                    target_player.health -= 1;
                                 }
-                                if (this.target.player.seat === 0)
-                                    moveAI();
                                 break;
                             case 2:
-                                this.target.player.shieldUp();
-                                if (this.target.player.seat === 0)
-                                    moveAI();
+                                my_player.shieldUp();
                                 break;
                             case 3:
-                                if (this.target.target_player.shield.isVisible()) {
-                                    this.target.target_player.shieldDown();
+                                if (target_player.shield.isVisible()) {
+                                    target_player.shieldDown();
                                 }
                                 else {
-                                    this.target.target_player.health -= 1;
+                                    target_player.health -= 1;
                                 }
-                                if (this.target.player.seat === 0)
-                                    moveAI();
                                 break;
                             case 4:
-                                if (this.target.target_player.shield.isVisible()) {
-                                    this.target.target_player.shieldDown();
+                                if (target_player.shield.isVisible()) {
+                                    target_player.shieldDown();
                                 }
                                 else {
-                                    this.target.target_player.health -= 4;
+                                    target_player.health -= 4;
                                 }
-                                if (this.target.player.seat === 0)
-                                    moveAI();
                                 break;
                             case 5:
-                                this.target.player.health += 2;
-                                if (this.target.player.seat === 0)
-                                    moveAI();
+                                my_player.health += 2;
                                 break;
                             case 7:
-                                this.target.player.turnOpCards(this.target.target_player);
+                                my_player.turnOpCards(target_player);
                                 break;
                             case 8:
-                                this.target.player.showCardSelection();
+                                my_player.showCardSelection();
                             default:
                                 break;
                         }
-                        this.target.player.removeCard(i);
+                        my_player.removeCard(i);
                         initStats();
                         break;
                     }

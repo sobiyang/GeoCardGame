@@ -23,7 +23,7 @@ var player1, player2;
 function initGame() {
     stageWidth = $(document).width();
     stageHeight = $(document).height() - 140;
-    
+
     $('#gameContainer').width(stageWidth);
     $('#gameContainer').height(stageHeight);
     cardWidth = stageWidth / 10;
@@ -41,18 +41,31 @@ function initGame() {
     stage = new createjs.Stage("gameContainer");
     stage.canvas.width = stageWidth;
     stage.canvas.height = stageHeight;
-    stage.enableMouseOver(10);
+    stage.enableMouseOver(20);
 
     player1 = new Player(0, 5, 7);
     player2 = new Player(1, 5, 7);
-    
+
     initConsole();
     initUI();
     initStats();
+
+    $(window).resize(onWindowResize);
+}
+
+function onWindowResize() {
+    stageWidth = $(document).width();
+    stageHeight = $(document).height() - 140;
+
+    $('#gameContainer').width(stageWidth);
+    $('#gameContainer').height(stageHeight);
+
+    stage.update();
 }
 
 function initUI() {
-    
+    $("#btnEndTurn").css({top: $(document).height() / 2 - 40, left: $(document).width() / 2 - 80, position: 'absolute'});
+    $('#btnEndTurn').hide();
 }
 
 function initConsole() {
@@ -96,6 +109,7 @@ function move(order) {
  * 6. Two Rectangles
  * 7. Two Triangles
  * */
+
 function moveAI() {
     player1.tappedCards.length = 0;
     player2.tappedCards.length = 0;
@@ -169,11 +183,11 @@ function removeOpCard(i) {
 function initStats() {
     if (player1.health <= 0) {
         alert("You lost!");
-        location.reload(true);
+//        location.reload(true);
     }
     else if (player2.health <= 0) {
         alert("You win!");
-        location.reload(true);
+//        location.reload(true);
     }
     else {
         var tempHtml = "<p>Your HP: " + player1.health.toString() + "</p>"
@@ -184,12 +198,28 @@ function initStats() {
 }
 
 function toggleControls() {
+
     $("button").each(function(index) {
-        if (isControlHidden)
-            $(this).fadeIn();
-        else
-            $(this).fadeOut();
+        if ($(this).attr('id') === 'btnEndTurn') {
+            if (isControlHidden)
+                $(this).fadeOut();
+            else
+                $(this).fadeIn();
+            return;
+
+        }
+        else {
+            if (isControlHidden) {
+                stage.enableDOMEvents(true);
+                $(this).fadeIn();
+            }
+            else {
+                stage.enableDOMEvents(false);
+                $(this).fadeOut();
+            }
+        }
     });
+
     isControlHidden = !isControlHidden;
 }
 

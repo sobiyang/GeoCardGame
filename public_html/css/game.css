@@ -47,3 +47,8 @@ body{
     top: 10px;
     right: 10px;
 }
+
+#btnEndTurn{
+    width: 160px;
+    height: 80px;
+}

@@ -114,25 +114,22 @@ function Card(stageIn, cardX, cardY, typeIn, flippedIn) {
         this.shape.cache(0, 0, cardWidth, cardHeight);
     this.stage.addChild(this.shape);
     this.stage.update();
-
 }
 
-
-Card.prototype.turn = function() {
-    var obj = {shape: this.shape, factor: 1};
+Card.prototype.turn = function() {    
     var timeline = new TimelineLite();
-    var t1 = new TweenLite(obj, 0.5, {factor: 0, onUpdate: function() {
-            this.target.shape.scaleX = this.target.factor;
+    var t1 = new TweenLite(this.shape, 0.5, {scaleX: 0, ease: Linear.easeOut,
+        onUpdate: function() {
             stage.update();
         }, onComplete: function() {
-            this.target.shape.filters = [];
-            this.target.shape.cache(0, 0, cardWidth, cardHeight);
+            this.target.filters = [];
+            this.target.cache(0, 0, cardWidth, cardHeight);
             stage.update();
         }});
-    var t2 = new TweenLite(obj, 0.5, {factor: 1, onUpdate: function() {
-            this.target.shape.scaleX = this.target.factor;
+    var t2 = new TweenLite(this.shape, 0.5, {scaleX: 1, ease: Linear.easeIn,delay: 0.2, 
+        onUpdate: function() {
             stage.update();
-        }});
+        }});    
     timeline.add(t1);
     timeline.add(t2);
 };
