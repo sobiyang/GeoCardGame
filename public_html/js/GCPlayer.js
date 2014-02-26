@@ -19,6 +19,8 @@ function Player(seat, max_card_count, health) {
     this.tappedCards = [];
     this.selectableCards = [];
     
+    this.isFrozen = 0;
+
     this.initPlace();
 
     var shield = new createjs.Graphics();
@@ -31,12 +33,24 @@ function Player(seat, max_card_count, health) {
     this.shield.y = this.baseY - 10;
     this.shield.visible = false;
     stage.addChild(this.shield);
+    
+    
+    var frozen = new createjs.Graphics();
+    frozen.setStrokeStyle(1, 'square');
+    frozen.beginFill(createjs.Graphics.getRGB(153, 255, 255));
+    frozen.drawRect(0, 0, (cardWidth + 20) * 5, cardHeight + 20);
+    frozen.endFill();
+    this.frozen = new createjs.Shape(frozen);
+    this.frozen.x = this.baseX - 10;
+    this.frozen.y = this.baseY - 10;
+    this.frozen.visible = false;
+    stage.addChild(this.frozen);
+    
     stage.update();
-
     this.initCards();
 }
 
-Player.prototype.initPlace = function() {    
+Player.prototype.initPlace = function() {
     switch (this.seat) {
         case 0:
             this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
@@ -82,7 +96,7 @@ Player.prototype.chooseCard = function(card) {
     }
     stage.update();
     this.selectableCards.length = 0;
-    moveAI();
+    toggleControls();
 };
 
 Player.prototype.initCardSelectionHandler = function(card) {
@@ -239,12 +253,12 @@ Player.prototype.turnOpCards = function(target_player) {
 Player.prototype.playCard = function(target_player) {
     var my_player = this;
     var target_y = (stageHeight - cardHeight) / 2;
-    if (this.tappedCards.length === 1) {        
+    if (this.tappedCards.length === 1) {
         if (this.seat !== 0) {
             this.tappedCards[0].shape.filters = [];
             this.tappedCards[0].shape.cache(0, 0, cardWidth, cardHeight);
         }
-        
+
         TweenLite.to(this.tappedCards[0].shape, 1, {
             y: target_y,
             ease: Elastic.easeOut,
@@ -252,11 +266,12 @@ Player.prototype.playCard = function(target_player) {
                 stage.update();
             }, onComplete: function() {
                 for (var i = 0; i < my_player.deck.length; i++) {
-                    if (this.target === my_player.deck[i].shape) {                        
+                    if (this.target === my_player.deck[i].shape) {
                         stage.removeChild(this.target);
                         switch (my_player.deck[i].type) {
                             case 0:
                                 my_player.health += 1;
+                                toggleControls();
                                 break;
                             case 1:
                                 if (target_player.shield.isVisible()) {
@@ -265,17 +280,17 @@ Player.prototype.playCard = function(target_player) {
                                 else {
                                     target_player.health -= 1;
                                 }
+                                toggleControls();
                                 break;
                             case 2:
                                 my_player.shieldUp();
+                                toggleControls();
                                 break;
                             case 3:
-                                if (target_player.shield.isVisible()) {
-                                    target_player.shieldDown();
-                                }
-                                else {
-                                    target_player.health -= 1;
-                                }
+                                target_player.isFrozen = 2;
+                                target_player.frozen.visible = true;
+                                stage.update();
+                                toggleControls();
                                 break;
                             case 4:
                                 if (target_player.shield.isVisible()) {
@@ -284,12 +299,15 @@ Player.prototype.playCard = function(target_player) {
                                 else {
                                     target_player.health -= 4;
                                 }
+                                toggleControls();
                                 break;
                             case 5:
-                                my_player.health += 2;
+                                my_player.health += 4;
+                                toggleControls();
                                 break;
                             case 7:
                                 my_player.turnOpCards(target_player);
+                                toggleControls();
                                 break;
                             case 8:
                                 my_player.showCardSelection();
@@ -301,7 +319,6 @@ Player.prototype.playCard = function(target_player) {
                         break;
                     }
                 }
-                toggleControls();
             }});
     }
     else {

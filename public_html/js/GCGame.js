@@ -111,8 +111,19 @@ function move(order) {
  * */
 
 function moveAI() {
+    $('#btnEndTurn').hide();
     player1.tappedCards.length = 0;
     player2.tappedCards.length = 0;
+
+    if (player2.isFrozen > 0) {
+        player2.isFrozen -= 1;
+        toggleControls();
+        return;
+    }
+    else{
+        player2.frozen.visible = false;
+        stage.update();
+    }
     var merge = false;
     var heal = false;
     var attack = false;
@@ -198,7 +209,15 @@ function initStats() {
 }
 
 function toggleControls() {
-
+    if (player1.isFrozen > 0) {        
+        player1.isFrozen -= 1;
+        $('#btnEndTurn').show();
+        return;
+    }
+    else{        
+        player1.frozen.visible = false;
+        stage.update();
+    }
     $("button").each(function(index) {
         if ($(this).attr('id') === 'btnEndTurn') {
             if (isControlHidden)
@@ -206,7 +225,6 @@ function toggleControls() {
             else
                 $(this).fadeIn();
             return;
-
         }
         else {
             if (isControlHidden) {
