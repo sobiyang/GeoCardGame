@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geometic Card Game</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/jm-themes/gcg.min.css" />
+        <link rel="stylesheet" href="css/jm-themes/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.1.min.css" />
+        <link rel="stylesheet" href="css/game.css">
+    </head>
+    <body>
+        <div data-role="page" data-theme="a">
+            <div data-role="header" class="ui-header">
+                <a href="index.html"  data-transition="flip" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Back</a>
+                <h1>Geometric Card Game</h1>
+            </div>
+            <div data-role="content">
+                <div data-role="collapsible">
+                    <h4>Game play</h4>
+                    <p>This is a turn-by-turn game, each turn you can do one of the four actions: drawing a card, discarding a card, merging two cards, and playing a card.</p>
+                    <p>Once the action is done, you need to click "End turn" button to end your turn.</p>
+                </div>
+                <div data-role="collapsible">
+                    <h4>Cards</h4>
+                    <a href="#popupBasic" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="pop">Basic Cards</a>
+                    <a href="#popupBasic" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-btn-inline" data-transition="pop">Advanced Cards</a>
+                </div>
+                <div data-role="collapsible">
+                    <h4>Controls</h4>
+                    <p>There are four buttons on the bottom of the screen:</p>
+                    <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+                        <a href="#" class="ui-btn ui-corner-all">Draw</a>
+                        <a href="#" class="ui-btn ui-corner-all">Merge</a>
+                        <a href="#" class="ui-btn ui-corner-all">Discard</a>
+                        <a href="#" class="ui-btn ui-corner-all">Play</a>
+                    </div>
+                    <p>You need to first click/touch a card, it will be selected, and then you can click the "Discard" or "Play" button.</p>
+                    <p>Or you can select two cards, and click "Merge" button to merge them into an advanced card.</p>
+                    <p>Or if you have no cards on hand, click "Draw" to gain a new basic card.</p>
+                </div>
+            </div>
+            <div data-role="footer" class="ui-footer-fixed">
+                Copyright 2014 Brian Yang Bianyue
+            </div>
+        </div>
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.4.0.min.js"></script>
+    </body>
+</html>

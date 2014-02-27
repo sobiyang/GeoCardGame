@@ -7,29 +7,28 @@
         <link rel="stylesheet" href="css/jm-themes/gcg.min.css" />
         <link rel="stylesheet" href="css/jm-themes/jquery.mobile.icons.min.css" />
         <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.1.min.css" />
+	<link rel="stylesheet" href="switchbox/css/style.css">
+        <link rel="stylesheet" href="switchbox/source/swipebox.css">
         <link rel="stylesheet" href="css/game.css">
     </head>
     <body>
         <div data-role="page" data-theme="a">
             <div data-role="header" class="ui-header">
+                <a href="index.html"  data-transition="flip" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Back</a>
                 <h1>Geometric Card Game</h1>
             </div>
             <div data-role="content">
-                <div class="ui-grid-b">
-                    <div class="ui-block-a"></div>
-                    <div class="ui-block-b">
-                        <a href="game.html" data-ajax="false" class="ui-btn ui-icon-carat-r ui-btn-icon-left ui-corner-all">Play</a>
-                        <a href="help.html" data-transition="flip"
-                           class="ui-btn ui-icon-eye ui-btn-icon-left ui-corner-all">How to play</a>
-                        <a href="about.html" data-transition="flip" 
-                           class="ui-btn ui-icon-info ui-btn-icon-left ui-corner-all">About this game</a>
-                    </div>
-                    <div class="ui-block-c"></div>
+                <div data-role="collapsible">
+                    <h4>The game</h4>
+                    <p>This is a work of an amateur.</p>
+                </div>
+                <div data-role="collapsible">
+                    <h4>The developer</h4>
                 </div>
             </div>
             <div data-role="footer" class="ui-footer-fixed">
                 Copyright 2014 Brian Yang Bianyue
-            </div><!-- /footer -->
+            </div>
         </div>
         <script src="js/jquery-1.10.2.min.js"></script>
         <script src="js/jquery.mobile-1.4.0.min.js"></script>
