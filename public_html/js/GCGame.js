@@ -120,7 +120,7 @@ function moveAI() {
         toggleControls();
         return;
     }
-    else{
+    else {
         player2.frozen.visible = false;
         stage.update();
     }
@@ -192,29 +192,32 @@ function removeOpCard(i) {
 }
 
 function initStats() {
+    var tempHtml = "<p>Your HP: " + player1.health.toString() + "</p>"
+    $('#myStats').html(tempHtml);
+    tempHtml = "Player2's HP:" + player2.health.toString() + "</p>";
+    $('#opStats').html(tempHtml);
     if (player1.health <= 0) {
         alert("You lost!");
-//        location.reload(true);
+        $('#mainContent').empty();
+        $('#controlBottom').empty();
     }
     else if (player2.health <= 0) {
         alert("You win!");
-//        location.reload(true);
+        $('#mainContent').empty();
+        $('#controlBottom').empty();
     }
     else {
-        var tempHtml = "<p>Your HP: " + player1.health.toString() + "</p>"
-        $('#myStats').html(tempHtml);
-        tempHtml = "Player2's HP:" + player2.health.toString() + "</p>";
-        $('#opStats').html(tempHtml);
+
     }
 }
 
 function toggleControls() {
-    if (player1.isFrozen > 0) {        
+    if (player1.isFrozen > 0) {
         player1.isFrozen -= 1;
         $('#btnEndTurn').show();
         return;
     }
-    else{        
+    else {
         player1.frozen.visible = false;
         stage.update();
     }
