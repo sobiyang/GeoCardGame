@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Geometic Card Game</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="css/jm-themes/gcg.min.css" />
+        <link rel="stylesheet" href="css/jm-themes/jquery.mobile.icons.min.css" />
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.4.1.min.css" />
+        <link rel="stylesheet" href="css/game.css">
+    </head>
+    <body>
+        <div data-role="page" data-theme="a">
+            <div data-role="header" class="ui-header">
+                <a href="index.html"  data-transition="flip" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Back</a>
+                <h1>Geometric Card Game</h1>
+            </div>
+            <div data-role="content">
+                <ul data-role="listview" data-split-icon="info" data-split-theme="a" data-inset="true">
+                    <li data-role="list-divider">Cards</li>
+                    <li><a href="#">
+                            <img src="../_assets/img/album-bb.jpg">
+                            <h2>Circle</h2></a>
+                        <a href="#popupCircle" data-rel="popup" data-position-to="window" data-transition="pop">Circle</a>
+                    </li>
+                </ul>
+                <div data-role="popup" id="popupCircle" class="ui-content" style="max-width:300px; padding-bottom:2em;">
+                    <h3>Circle</h3>
+                    <p>This card will restore 1 HP.</p>
+                    <a href="card_explain.html" data-rel="back" class="ui-shadow ui-btn ui-corner-all ui-btn-inline">OK</a>
+                </div>
+                <div data-role="footer" class="ui-footer-fixed">
+                    Copyright 2014 Brian Yang Bianyue
+                </div>
+            </div>
+        </div>
+        <script src="js/jquery-1.10.2.min.js"></script>
+        <script src="js/jquery.mobile-1.4.0.min.js"></script>
+    </body>
+</html>

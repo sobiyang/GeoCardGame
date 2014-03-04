@@ -18,7 +18,7 @@ function Player(seat, max_card_count, health) {
     this.deck = [];
     this.tappedCards = [];
     this.selectableCards = [];
-    
+
     this.isFrozen = 0;
 
     this.initPlace();
@@ -33,8 +33,8 @@ function Player(seat, max_card_count, health) {
     this.shield.y = this.baseY - 10;
     this.shield.visible = false;
     stage.addChild(this.shield);
-    
-    
+
+
     var frozen = new createjs.Graphics();
     frozen.setStrokeStyle(1, 'square');
     frozen.beginFill(createjs.Graphics.getRGB(153, 255, 255));
@@ -45,34 +45,35 @@ function Player(seat, max_card_count, health) {
     this.frozen.y = this.baseY - 10;
     this.frozen.visible = false;
     stage.addChild(this.frozen);
-    
+
     stage.update();
     this.initCards();
 }
+;
 
 Player.prototype.initPlace = function() {
     switch (this.seat) {
         case 0:
-            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
+            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + cardWidth / 4);
             this.baseY = stageHeight - cardHeight - 20;
             this.isCardFold = false;
             break;
         case 1:
-            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + 20);
+            this.baseX = stageWidth / 2 - 2.5 * (cardWidth + cardWidth / 4);
             this.baseY = 10;
             this.isCardFold = true;
             break;
         default:
             break;
     }
-}
+};
 
 Player.prototype.initCards = function() {
     var i = 0;
     var type = 0;
     for (i; i < this.max_card_count; i++) {
         type = Math.floor((Math.random() * 4));
-        var card = new Card(stage, this.baseX + i * (cardWidth + 20), this.baseY, type, this.isCardFold);
+        var card = new Card(stage, this.baseX + i * (cardWidth + cardWidth / 4), this.baseY, type, this.isCardFold);
         this.deck.push(card);
         if (this.seat === 0) {
             this.initMouseInOutHandler(card);
@@ -148,10 +149,10 @@ Player.prototype.initMouseInOutHandler = function(card) {
 };
 
 Player.prototype.toggleSelected = function(card) {
-    var obj = {shape: card.shape, factor: 0};
+    var obj = {shape: card.shape, factor: card.shape.regY};
     if (card.selected) {
-        TweenLite.to(obj, 0.5, {factor: 1, onUpdate: function() {
-                obj.shape.regY -= this.target.factor;
+        TweenLite.to(obj, 0.5, {factor: card.shape.regY - 10, onUpdate: function() {
+                obj.shape.regY = this.target.factor;
                 stage.update();
             }});
         card.selected = false;
@@ -162,8 +163,8 @@ Player.prototype.toggleSelected = function(card) {
         }
     }
     else {
-        TweenLite.to(obj, 0.5, {factor: 1, onUpdate: function() {
-                obj.shape.regY += this.target.factor;
+        TweenLite.to(obj, 0.5, {factor: card.shape.regY + 10, onUpdate: function() {
+                obj.shape.regY = this.target.factor;
                 stage.update();
             }});
         card.selected = true;

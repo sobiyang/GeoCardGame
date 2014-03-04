@@ -21,12 +21,12 @@ var animationPeriod = 1000;
 var player1, player2;
 
 function initGame() {
-    stageWidth = $(document).width();
-    stageHeight = $(document).height() - 140;
+    stageWidth = $(window).width();
+    stageHeight = $(window).height() - 140;
 
     $('#gameContainer').width(stageWidth);
     $('#gameContainer').height(stageHeight);
-    cardWidth = stageWidth / 10;
+    cardWidth = stageWidth / 8;
     if (cardWidth > 80)
         cardWidth = 80;
     cardHeight = stageHeight / 6;
@@ -54,8 +54,8 @@ function initGame() {
 }
 
 function onWindowResize() {
-    stageWidth = $(document).width();
-    stageHeight = $(document).height() - 140;
+    stageWidth = $(window).width();
+    stageHeight = $(window).height() - 140;
 
     $('#gameContainer').width(stageWidth);
     $('#gameContainer').height(stageHeight);
