@@ -173,7 +173,8 @@ Player.prototype.toggleSelected = function(card) {
 
 Player.prototype.drawCard = function() {
     if (this.deck.length >= this.max_card_count) {
-        alert("Card stack full!");
+        console.log("Card stack full!");
+        return;
     }
     else {
         var type = Math.floor((Math.random() * 4));
@@ -181,8 +182,8 @@ Player.prototype.drawCard = function() {
         this.deck.push(card);
         if (this.seat === 0)
             this.initMouseInOutHandler(card);
-        initStats();
-        toggleControls();
+//        initStats();
+//        toggleControls();
     }
 };
 

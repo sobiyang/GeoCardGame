@@ -42,15 +42,16 @@ function initGame() {
     stage.canvas.width = stageWidth;
     stage.canvas.height = stageHeight;
     stage.enableMouseOver(20);
+    createjs.Touch.enable(stage, true, false);
 
     player1 = new Player(0, 5, 7);
     player2 = new Player(1, 5, 7);
 
+    $(window).resize(onWindowResize);
+
     initConsole();
     initUI();
     initStats();
-
-    $(window).resize(onWindowResize);
 }
 
 function onWindowResize() {
@@ -64,8 +65,11 @@ function onWindowResize() {
 }
 
 function initUI() {
+    $('#popupEndGame').popup();
+
     $("#btnEndTurn").css({top: $(document).height() / 2 - 40, left: $(document).width() / 2 - 80, position: 'absolute'});
     $('#btnEndTurn').hide();
+
 }
 
 function initConsole() {
@@ -124,6 +128,8 @@ function moveAI() {
         player2.frozen.visible = false;
         stage.update();
     }
+    player2.drawCard();
+
     var merge = false;
     var heal = false;
     var attack = false;
@@ -192,22 +198,26 @@ function removeOpCard(i) {
 }
 
 function initStats() {
-    var tempHtml = "<p>Your HP: " + player1.health.toString() + "</p>"
+    var tempHtml = "<p>Your HP: " + player1.health.toString() + "</p>";
     $('#myStats').html(tempHtml);
     tempHtml = "Player2's HP:" + player2.health.toString() + "</p>";
     $('#opStats').html(tempHtml);
     if (player1.health <= 0) {
-        alert("You lost!");
+        createjs.Touch.disable(stage);
         $('#mainContent').empty();
         $('#controlBottom').empty();
     }
     else if (player2.health <= 0) {
-        alert("You win!");
+        //      createjs.Touch.disable(stage);
         $('#mainContent').empty();
         $('#controlBottom').empty();
-    }
-    else {
-
+        $('#endGameMsg').text('You win!');
+        setTimeout(function() {
+            $('#popupEndGame').popup('open', {
+                transition: 'pop',
+                positionTo: 'window'
+            });
+        }, 100);
     }
 }
 
@@ -233,6 +243,8 @@ function toggleControls() {
             if (isControlHidden) {
                 stage.enableDOMEvents(true);
                 $(this).fadeIn();
+
+                player1.drawCard();
             }
             else {
                 stage.enableDOMEvents(false);

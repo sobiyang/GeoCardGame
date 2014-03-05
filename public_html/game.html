@@ -12,7 +12,7 @@
     <body>
         <div data-role="page" data-theme="a">
             <div data-role="header" class="ui-header-fixed">
-                <a href="index.html" data-ajax="false" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Back</a>
+                <a href="index.html" data-ajax="false" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Home</a>
                 <h1>Geometric Card Game</h1>
                 <a href="game.html" data-ajax="false" class="ui-btn-right ui-btn ui-btn-icon-left ui-icon-refresh ui-corner-all" data-mini="true">Restart</a>
             </div>
@@ -24,15 +24,22 @@
             </div>
             <div data-role="footer" class="ui-footer-fixed">
                 <div data-role="controlgroup" data-type="horizontal" id="controlBottom">
-                    <button  onclick="player1.drawCard();" class="ui-btn ui-corner-all">Draw</button>
+                    <!--<button  onclick="player1.drawCard();" class="ui-btn ui-corner-all">Draw</button>-->
                     <button  onclick="player1.mergeCards();" class="ui-btn ui-corner-all">Merge</button>
                     <button  onclick="player1.playCard(player2);" class="ui-btn ui-corner-all">Play</button>
                     <button  onclick="player1.discardCard();" class="ui-btn ui-corner-all">Discard</button>
                 </div>
             </div><!-- /footer -->
+            <div id="popupEndGame" data-rel="popup" data-dismissible="false" data-history="false">
+                <ul data-role="listview" data-inset="true" style="min-width:210px;" data-mini="true">
+                    <li data-role="list-divider" id="endGameMsg"></li>
+                    <li><a href="index.html" data-ajax="false" class="ui-btn ui-btn-icon-left ui-icon-home">Home</a></li>
+                    <li><a href="game.html" data-ajax="false" class="ui-btn ui-btn-icon-left ui-icon-refresh">Restart</a></li>
+                </ul>   
+            </div>
         </div>
-        <script src="js/jquery-1.10.2.min.js"></script>
-        <script src="js/jquery.mobile-1.4.0.min.js"></script>
+        <script src="js/jquery-1.10.2.js"></script>
+        <script src="js/jquery.mobile-1.4.2.min.js"></script>
         <script src="js/easeljs-0.7.0.min.js"></script>
         <script src="js/tweenjs-0.5.1.min.js"></script>
         <script src="gsap/TweenMax.min.js"></script>
