@@ -11,28 +11,27 @@
     </head>
     <body>
         <div data-role="page" data-theme="a">
-            <div data-role="header" class="ui-header-fixed">
+            <div data-role="header" class="ui-header">
                 <a href="index.html" data-ajax="false" class="ui-btn-left ui-btn ui-btn-icon-left ui-icon-home ui-corner-all" data-mini="true">Back</a>
-                <h1>Geometric Card Game</h1>
+                <h1>GeoCardGame</h1>
                 <a href="game.html" data-ajax="false" class="ui-btn-right ui-btn ui-btn-icon-left ui-icon-refresh ui-corner-all" data-mini="true">Restart</a>
             </div>
-            <div id="mainContent">
+            <div id="mainContent" class="ui-content">
                 <div id="opStats"></div>
                 <canvas id="gameContainer"></canvas>
                 <button onclick="moveAI();" class="ui-btn ui-corner-all" id="btnEndTurn">End Turn</button>
                 <div id="myStats"></div>
             </div>
-            <div data-role="footer" class="ui-footer-fixed">
+            <div data-role="footer" class="ui-footer">
                 <div data-role="controlgroup" data-type="horizontal" id="controlBottom">
-                    <button  onclick="player1.drawCard();" class="ui-btn ui-corner-all">Draw</button>
                     <button  onclick="player1.mergeCards();" class="ui-btn ui-corner-all">Merge</button>
                     <button  onclick="player1.playCard(player2);" class="ui-btn ui-corner-all">Play</button>
                     <button  onclick="player1.discardCard();" class="ui-btn ui-corner-all">Discard</button>
                 </div>
             </div><!-- /footer -->
         </div>
-        <script src="js/jquery-1.10.2.min.js"></script>
-        <script src="js/jquery.mobile-1.4.0.min.js"></script>
+        <script src="js/jquery-1.10.2.js"></script>
+        <script src="js/jquery.mobile-1.4.2.js"></script>
         <script src="js/easeljs-0.7.0.min.js"></script>
         <script src="js/tweenjs-0.5.1.min.js"></script>
         <script src="gsap/TweenMax.min.js"></script>

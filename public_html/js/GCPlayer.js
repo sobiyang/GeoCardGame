@@ -34,7 +34,6 @@ function Player(seat, max_card_count, health) {
     this.shield.visible = false;
     stage.addChild(this.shield);
 
-
     var frozen = new createjs.Graphics();
     frozen.setStrokeStyle(1, 'square');
     frozen.beginFill(createjs.Graphics.getRGB(153, 255, 255));
@@ -83,7 +82,7 @@ Player.prototype.initCards = function() {
 
 
 Player.prototype.chooseCard = function(card) {
-    var targetX = this.baseX + this.deck.length * (cardWidth + 20);
+    var targetX = this.baseX + this.deck.length * (cardWidth + cardWidth / 4);
     var targetY = this.baseY;
     this.deck.push(card);
     card.setPosition(targetX, targetY);
@@ -97,7 +96,6 @@ Player.prototype.chooseCard = function(card) {
     }
     stage.update();
     this.selectableCards.length = 0;
-    toggleControls();
 };
 
 Player.prototype.initCardSelectionHandler = function(card) {
@@ -121,8 +119,8 @@ Player.prototype.initCardSelectionHandler = function(card) {
 Player.prototype.showCardSelection = function() {
     this.selectableCards.length = 0;
     for (var i = 0; i < 4; i++) {
-        var targetX = this.baseX + i * (cardWidth + 20);
-        var targetY = (stage.canvas.height - cardHeight) / 2;
+        var targetX = this.baseX + (i + 1)* (cardWidth + cardWidth / 4);
+        var targetY = (stage.canvas.height + cardHeight ) / 2;
         var card = new Card(stage, targetX, targetY, i, this.isCardFold);
         this.selectableCards.push(card);
         this.initCardSelectionHandler(card);
@@ -179,12 +177,10 @@ Player.prototype.drawCard = function() {
     }
     else {
         var type = Math.floor((Math.random() * 4));
-        var card = new Card(stage, this.baseX + this.deck.length * (cardWidth + 20), this.baseY, type, this.isCardFold);
+        var card = new Card(stage, this.baseX + this.deck.length * (cardWidth + cardWidth / 4), this.baseY, type, this.isCardFold);
         this.deck.push(card);
         if (this.seat === 0)
             this.initMouseInOutHandler(card);
-//        initStats();
-//        toggleControls();
     }
 };
 
@@ -200,7 +196,6 @@ Player.prototype.discardCard = function() {
                     }
                 }
                 stage.removeChild(this.target);
-                toggleControls();
             }
         });
     }
@@ -212,7 +207,7 @@ Player.prototype.discardCard = function() {
 Player.prototype.removeCard = function(i) {
     this.deck.splice(i, 1);
     for (i; i < this.deck.length; i++) {
-        this.deck[i].shape.x -= (cardWidth + 20);
+        this.deck[i].shape.x -= (cardWidth + cardWidth / 4);
     }
     stage.update();
 };
@@ -232,13 +227,13 @@ Player.prototype.mergeCards = function() {
 
             stage.removeChild(this.tappedCards[0].shape);
             stage.removeChild(this.tappedCards[1].shape);
-            var card = new Card(stage, this.baseX + this.deck.length * (cardWidth + 20), this.baseY, newType, this.isCardFold);
+            var card = new Card(stage, this.baseX + this.deck.length * (cardWidth + cardWidth / 4), this.baseY, newType, this.isCardFold);
             if (this.seat === 0) {
                 this.initMouseInOutHandler(card);
             }
 
             this.deck.push(card);
-            toggleControls();
+            this.tappedCards.length = 0;
         }
     }
     else {
@@ -254,6 +249,7 @@ Player.prototype.turnOpCards = function(target_player) {
 
 Player.prototype.playCard = function(target_player) {
     var my_player = this;
+    var target_x = (stageWidth - cardWidth) / 2;
     var target_y = (stageHeight - cardHeight) / 2;
     if (this.tappedCards.length === 1) {
         if (this.seat !== 0) {
@@ -262,6 +258,7 @@ Player.prototype.playCard = function(target_player) {
         }
 
         TweenLite.to(this.tappedCards[0].shape, 1, {
+            x: target_x, 
             y: target_y,
             ease: Elastic.easeOut,
             onUpdate: function() {
@@ -273,7 +270,6 @@ Player.prototype.playCard = function(target_player) {
                         switch (my_player.deck[i].type) {
                             case 0:
                                 my_player.health += 1;
-                                toggleControls();
                                 break;
                             case 1:
                                 if (target_player.shield.isVisible()) {
@@ -282,17 +278,14 @@ Player.prototype.playCard = function(target_player) {
                                 else {
                                     target_player.health -= 1;
                                 }
-                                toggleControls();
                                 break;
                             case 2:
                                 my_player.shieldUp();
-                                toggleControls();
                                 break;
                             case 3:
                                 target_player.isFrozen = 2;
                                 target_player.frozen.visible = true;
                                 stage.update();
-                                toggleControls();
                                 break;
                             case 4:
                                 if (target_player.shield.isVisible()) {
@@ -301,15 +294,12 @@ Player.prototype.playCard = function(target_player) {
                                 else {
                                     target_player.health -= 4;
                                 }
-                                toggleControls();
                                 break;
                             case 5:
                                 my_player.health += 4;
-                                toggleControls();
                                 break;
                             case 7:
                                 my_player.turnOpCards(target_player);
-                                toggleControls();
                                 break;
                             case 8:
                                 my_player.showCardSelection();
@@ -321,6 +311,7 @@ Player.prototype.playCard = function(target_player) {
                         break;
                     }
                 }
+                my_player.tappedCards.length = 0;
             }});
     }
     else {

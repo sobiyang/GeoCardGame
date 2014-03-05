@@ -32,7 +32,7 @@ function initGame() {
     cardHeight = stageHeight / 6;
     if (cardHeight > 150)
         cardHeight = 150;
-    squareLength = cardWidth - 20;
+    squareLength = cardWidth * 3 / 4;
     circleRadius = squareLength / 2;
     triangleLength = squareLength;
     rectangleWidth = cardWidth / 2;
@@ -57,18 +57,22 @@ function initGame() {
 function onWindowResize() {
     stageWidth = $(window).width();
     stageHeight = $(window).height() - 140;
-
+    
     $('#gameContainer').width(stageWidth);
     $('#gameContainer').height(stageHeight);
+    
+    console.log(stageWidth, stageHeight);
+    
+    stage.setBounds(0, 0, stageWidth, stageHeight);
+    
+    $("#btnEndTurn").css({top: $(window).height() / 2 - 20, left: $(window).width() / 2 - cardWidth * 2.5 - cardWidth / 2, position: 'absolute'});
 
     stage.update();
 }
 
 function initUI() {
     $('#popupEndGame').popup();
-
-    $("#btnEndTurn").css({top: $(document).height() / 2 - 40, left: $(document).width() / 2 - 80, position: 'absolute'});
-    $('#btnEndTurn').hide();
+    $("#btnEndTurn").css({height: cardHeight / 2, top: $(window).height() / 2 - 20, left: $(window).width() / 2 - cardWidth * 2.5 - cardWidth / 2, position: 'absolute'});
 
 }
 
@@ -115,7 +119,8 @@ function move(order) {
  * */
 
 function moveAI() {
-    $('#btnEndTurn').hide();
+    toggleControls();
+    
     player1.tappedCards.length = 0;
     player2.tappedCards.length = 0;
 
@@ -180,6 +185,8 @@ function moveAI() {
         player2.tappedCards[0] = player2.deck[0];
         player2.discardCard();
     }
+    
+    toggleControls();
 }
 
 function removeCard(i) {
@@ -224,7 +231,6 @@ function initStats() {
 function toggleControls() {
     if (player1.isFrozen > 0) {
         player1.isFrozen -= 1;
-        $('#btnEndTurn').show();
         return;
     }
     else {
@@ -232,14 +238,7 @@ function toggleControls() {
         stage.update();
     }
     $("button").each(function(index) {
-        if ($(this).attr('id') === 'btnEndTurn') {
-            if (isControlHidden)
-                $(this).fadeOut();
-            else
-                $(this).fadeIn();
-            return;
-        }
-        else {
+        if ($(this).attr('id') !== 'btnEndTurn') {
             if (isControlHidden) {
                 stage.enableDOMEvents(true);
                 $(this).fadeIn();

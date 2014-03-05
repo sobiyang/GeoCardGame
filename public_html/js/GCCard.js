@@ -87,8 +87,8 @@ function Card(stageIn, cardX, cardY, typeIn, flippedIn) {
             break;
         case 7:
             this.graphics.beginStroke('#B8860B');
-            this.graphics.drawRect((cardWidth - rectangleWidth / 2) / 2, (cardHeight - rectangleHeight / 2) / 2 + 10,
-                    rectangleWidth / 2, rectangleHeight / 2 + 20);
+            this.graphics.drawRect((cardWidth - rectangleWidth / 2) / 2, cardHeight / 4  + cardHeight / 8,
+                    rectangleWidth / 2, rectangleHeight / 2 + cardHeight / 8);
             this.graphics.moveTo(cardWidth / 2 + circleRadius / 3, cardHeight / 4);
             this.graphics.drawCircle(cardWidth / 2, cardHeight / 4, circleRadius / 3);
             break;
