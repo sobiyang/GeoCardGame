@@ -29,6 +29,13 @@
                     <button  onclick="player1.discardCard();" class="ui-btn ui-corner-all">Discard</button>
                 </div>
             </div><!-- /footer -->
+            <div data-role="popup" id="popupEndGame" data-history="false">
+                <ul data-role="listview" data-inset="true" style="min-width:210px;">
+                    <li data-role="list-divider" id="endGameMsg"></li>
+                    <li><a href="index.html" data-ajax="false" class="ui-btn ui-btn-icon-left ui-icon-home" data-mini="true">Back</a></li>
+                    <li><a href="game.html" data-ajax="false" class="ui-btn ui-btn-icon-left ui-icon-refresh" data-mini="true">Restart</a></li>
+                </ul>
+            </div>
         </div>
         <script src="js/jquery-1.10.2.js"></script>
         <script src="js/jquery.mobile-1.4.2.js"></script>

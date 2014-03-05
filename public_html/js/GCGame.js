@@ -134,7 +134,11 @@ function moveAI() {
         stage.update();
     }
     player2.drawCard();
+    setTimeout(thinkAI, 2000);
+}
 
+function thinkAI(){
+    
     var merge = false;
     var heal = false;
     var attack = false;
@@ -186,7 +190,6 @@ function moveAI() {
         player2.discardCard();
     }
     
-    toggleControls();
 }
 
 function removeCard(i) {
