@@ -57,14 +57,14 @@ function initGame() {
 function onWindowResize() {
     stageWidth = $(window).width();
     stageHeight = $(window).height() - 140;
-    
+
     $('#gameContainer').width(stageWidth);
     $('#gameContainer').height(stageHeight);
-    
+
     console.log(stageWidth, stageHeight);
-    
+
     stage.setBounds(0, 0, stageWidth, stageHeight);
-    
+
     $("#btnEndTurn").css({top: $(window).height() / 2 - 20, left: $(window).width() / 2 - cardWidth * 2.5 - cardWidth / 2, position: 'absolute'});
 
     stage.update();
@@ -120,7 +120,7 @@ function move(order) {
 
 function moveAI() {
     toggleControls();
-    
+
     player1.tappedCards.length = 0;
     player2.tappedCards.length = 0;
 
@@ -133,12 +133,12 @@ function moveAI() {
         player2.frozen.visible = false;
         stage.update();
     }
+
     player2.drawCard();
     setTimeout(thinkAI, 2000);
 }
 
-function thinkAI(){
-    
+function thinkAI() {
     var merge = false;
     var heal = false;
     var attack = false;
@@ -161,35 +161,62 @@ function thinkAI(){
         if (merge)
             break;
 
-        if (player2.deck[m].type >= 1 && player2.deck[m].type <= 4)
-        {
+        if (player2.deck[m].type === 4 || player2.deck[m].type === 1) {
             player2.tappedCards[0] = player2.deck[m];
             attack = true;
             break;
         }
 
-        if (player2.deck[m].type === 5) {
+        // If computer player's HP is 3 points lower than max, use big heal
+        if (player2.deck[m].type === 5 && player2.health <= player2.max_health - 3) {
             player2.tappedCards[0] = player2.deck[m];
             heal = true;
             break;
         }
 
+        // If computer player's HP is 1 point lower than max, use small heal
+        if (player2.deck[m].type === 0 && player2.health <= player2.max_health - 1) {
+            player2.tappedCards[0] = player2.deck[m];
+            heal = true;
+            break;
+        }
+
+        // If human player is not frozen, freeze him/her
+        if (player2.deck[m].type === 3 && player1.isFrozen === 0) {
+            player2.tappedCards[0] = player2.deck[m];
+            attack = true;
+            break;
+        }
+
+        // If computer player's shield is down, shield up
+        if (player2.deck[m].type === 2 && !player2.shield.isVisible())
+        {
+            player2.tappedCards[0] = player2.deck[m];
+            heal = true;
+            break;
+        }
     }
 
     if (merge) {
         player2.mergeCards();
+        player1.tappedCards.length = 0;
+        setTimeout(thinkAI, 2000);
     }
     else if (attack || heal) {
         player2.playCard(player1);
-    }
-    else if (player2.deck.length < player2.max_card_count) {
-        player2.drawCard();
+        player1.tappedCards.length = 0;
+        setTimeout(thinkAI, 2000);
     }
     else {
-        player2.tappedCards[0] = player2.deck[0];
-        player2.discardCard();
+        if (player2.deck.length === player2.max_card_count) {
+            player2.tappedCards[0] = player2.deck[0];
+            player2.discardCard();
+        }
+        if (player1.isFrozen === 0)
+            toggleControls();
+        else
+            setTimeout(moveAI, 2000);
     }
-    
 }
 
 function removeCard(i) {
@@ -240,21 +267,19 @@ function toggleControls() {
         player1.frozen.visible = false;
         stage.update();
     }
-    $("button").each(function(index) {
-        if ($(this).attr('id') !== 'btnEndTurn') {
-            if (isControlHidden) {
-                stage.enableDOMEvents(true);
-                $(this).fadeIn();
 
-                player1.drawCard();
-            }
-            else {
-                stage.enableDOMEvents(false);
-                $(this).fadeOut();
-            }
+    $("button").each(function(index) {
+        if (isControlHidden) {
+            stage.enableDOMEvents(true);
+            $(this).fadeIn();
+        }
+        else {
+            stage.enableDOMEvents(false);
+            $(this).fadeOut();
         }
     });
-
+    if(isControlHidden)        
+        player1.drawCard();
     isControlHidden = !isControlHidden;
 }
 

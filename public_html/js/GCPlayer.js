@@ -13,7 +13,7 @@ function Player(seat, max_card_count, health) {
         return;
     }
     this.seat = seat;
-    this.health = health;
+    this.max_health = this.health = health;
     this.max_card_count = max_card_count;
     this.deck = [];
     this.tappedCards = [];
@@ -68,15 +68,8 @@ Player.prototype.initPlace = function() {
 };
 
 Player.prototype.initCards = function() {
-    var i = 0;
-    var type = 0;
-    for (i; i < this.max_card_count; i++) {
-        type = Math.floor((Math.random() * 4));
-        var card = new Card(stage, this.baseX + i * (cardWidth + cardWidth / 4), this.baseY, type, this.isCardFold);
-        this.deck.push(card);
-        if (this.seat === 0) {
-            this.initMouseInOutHandler(card);
-        }
+    for (var i = 0; i < this.max_card_count; i++) {
+        this.drawCard();
     }
 };
 
@@ -119,8 +112,8 @@ Player.prototype.initCardSelectionHandler = function(card) {
 Player.prototype.showCardSelection = function() {
     this.selectableCards.length = 0;
     for (var i = 0; i < 4; i++) {
-        var targetX = this.baseX + (i + 1)* (cardWidth + cardWidth / 4);
-        var targetY = (stage.canvas.height + cardHeight ) / 2;
+        var targetX = this.baseX + (i + 1) * (cardWidth + cardWidth / 4);
+        var targetY = (stage.canvas.height + cardHeight) / 2;
         var card = new Card(stage, targetX, targetY, i, this.isCardFold);
         this.selectableCards.push(card);
         this.initCardSelectionHandler(card);
@@ -176,7 +169,16 @@ Player.prototype.drawCard = function() {
         return;
     }
     else {
-        var type = Math.floor((Math.random() * 4));
+        var dice = Math.floor((Math.random() * 10));
+        var type = 0;
+        if(dice >= 6 && dice <= 9)      // triangle card has weight of 4/10
+            type = 1;        
+        else if(dice >= 3 && dice <= 5) // square card has weight of 3/10
+            type = 2;
+        else if(dice >= 1 && dice <= 2) // circle card has weight of 2/10
+            type = 0;
+        else                            // rectangle card has weight of 4/10
+            type = 3;
         var card = new Card(stage, this.baseX + this.deck.length * (cardWidth + cardWidth / 4), this.baseY, type, this.isCardFold);
         this.deck.push(card);
         if (this.seat === 0)
@@ -195,7 +197,9 @@ Player.prototype.discardCard = function() {
                         my_player.removeCard(i);
                     }
                 }
+                my_player.tappedCards.length = 0;
                 stage.removeChild(this.target);
+                stage.update();
             }
         });
     }
@@ -258,7 +262,7 @@ Player.prototype.playCard = function(target_player) {
         }
 
         TweenLite.to(this.tappedCards[0].shape, 1, {
-            x: target_x, 
+            x: target_x,
             y: target_y,
             ease: Elastic.easeOut,
             onUpdate: function() {
@@ -270,6 +274,8 @@ Player.prototype.playCard = function(target_player) {
                         switch (my_player.deck[i].type) {
                             case 0:
                                 my_player.health += 1;
+                                if (my_player.health > my_player.max_health)
+                                    my_player.health = my_player.max_health;
                                 break;
                             case 1:
                                 if (target_player.shield.isVisible()) {
@@ -297,6 +303,8 @@ Player.prototype.playCard = function(target_player) {
                                 break;
                             case 5:
                                 my_player.health += 4;
+                                if (my_player.health > my_player.max_health)
+                                    my_player.health = my_player.max_health;
                                 break;
                             case 7:
                                 my_player.turnOpCards(target_player);
